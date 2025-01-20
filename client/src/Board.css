@@ -1,0 +1,51 @@
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 0;
+  width: fit-content;
+  margin: 20px auto;
+}
+
+.square {
+  background: #fff;
+  border: 2px solid #333;
+  font-size: 48px;
+  font-weight: bold;
+  line-height: 100px;
+  height: 100px;
+  width: 100px;
+  padding: 0;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.square:hover {
+  background-color: #f0f0f0;
+}
+
+/* Remove outer borders to create classic tic-tac-toe look */
+.square:nth-child(1),
+.square:nth-child(2),
+.square:nth-child(3) {
+  border-top: none;
+}
+
+.square:nth-child(1),
+.square:nth-child(4),
+.square:nth-child(7) {
+  border-left: none;
+}
+
+.square:nth-child(3),
+.square:nth-child(6),
+.square:nth-child(9) {
+  border-right: none;
+}
+
+.square:nth-child(7),
+.square:nth-child(8),
+.square:nth-child(9) {
+  border-bottom: none;
+}
