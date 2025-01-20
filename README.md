@@ -42,3 +42,58 @@ Implement the game logic to handle player moves, check for win conditions, and d
 ### Submission
 
 Either zip up your solution (including the .git folder) and send over, or share a link to a repository on a cloud git service, such as Github, Gitlab or Bitbucket.
+
+## Building and Running the Application
+
+### Local Development
+
+#### Prerequisites
+
+- Node.js v20 or later
+- npm v9 or later
+
+#### Server
+
+```zsh
+# Navigate to server directory
+cd server
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Run tests
+npm test
+```
+
+Server runs on http://localhost:3001
+
+#### Client
+
+```zsh
+# Navigate to client directory
+cd client
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Run tests
+npm test
+```
+
+Client runs on http://localhost:3000
+
+### Docker
+
+```zsh
+# Build and start all services
+docker-compose up --build
+
+# Stop all services
+docker-compose down
+```
