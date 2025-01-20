@@ -132,4 +132,111 @@ describe('App component', () => {
 
     consoleSpy.mockRestore();
   });
+
+  test('displays winner when data.winner is returned', async () => {
+    // 1st call: start game
+    // 2nd call: making move => returns winner
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ gameId: 'test-game-id' }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          board: ['X', null, null, null, null, null, null, null, null],
+          currentPlayer: 'O',
+          winner: 'X',
+          isFinished: true,
+        }),
+      } as Response);
+
+    render(<App />);
+
+    // Start New Game
+    fireEvent.click(screen.getByRole('button', { name: /start new game/i }));
+
+    // Wait for gameId
+    await screen.findByText('Game ID: test-game-id');
+
+    // Click square 0 => triggers the second fetch
+    fireEvent.click(screen.getByTestId('square-0'));
+
+    // Wait for winner text
+    await waitFor(() => {
+      expect(screen.getByText('Winner: X')).toBeInTheDocument();
+    });
+
+    // "Current Player" shouldn't be displayed if the game is finished
+    expect(screen.queryByText('Current Player:')).toBeNull();
+  });
+
+  test('declares a draw if board is full and no winner', async () => {
+    // 1st call: start
+    // 2nd call: move => returns a full board with no winner
+    const mockFullBoard = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', 'O'];
+
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ gameId: 'test-game-id' }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          board: mockFullBoard,
+          currentPlayer: 'O',
+          winner: null,
+          isFinished: false,
+        }),
+      } as Response);
+
+    render(<App />);
+
+    // Start New Game
+    fireEvent.click(screen.getByRole('button', { name: /start new game/i }));
+    await screen.findByText('Game ID: test-game-id');
+
+    // Click a square => triggers second fetch
+    fireEvent.click(screen.getByTestId('square-0'));
+
+    // Wait for the effect
+    await waitFor(() => {
+      expect(screen.queryByText('Current Player:')).toBeNull();
+    });
+  });
+
+  test('logs an error if the response includes data.error', async () => {
+    // 1st: start
+    // 2nd: move => returns { error: 'Some server error' }
+    global.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ gameId: 'test-game-id' }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          error: 'Some server error',
+        }),
+      } as Response);
+
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: /start new game/i }));
+    await screen.findByText('Game ID: test-game-id');
+
+    // Attempt move
+    fireEvent.click(screen.getByTestId('square-0'));
+
+    // Wait for the console error to be triggered
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith('Some server error');
+    });
+    consoleSpy.mockRestore();
+  });
 });
