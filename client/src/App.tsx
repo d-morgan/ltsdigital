@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Board from './Board';
 import './App.css';
 
@@ -59,13 +59,29 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Noughts and Crosses</h1>
-      <button onClick={startNewGame}>Start New Game</button>
-      <Board squares={board} onSquareClick={handleMove} />
-      {winner && <p>Winner: {winner}</p>}
-      {!isFinished && gameId && <p>Current Player: {currentPlayer}</p>}
-      {!gameId && <p>Please start a new game.</p>}
-      {gameId && <p>Game ID: {gameId}</p>}
+      <div className="container">
+        <h1>Noughts and Crosses</h1>
+        <button className="start-button" onClick={startNewGame}>
+          Start New Game
+        </button>
+
+        <Board squares={board} onSquareClick={handleMove} />
+
+        <div className="status-area">
+          {winner && <p className="status-message winner">Winner: {winner}</p>}
+          {!isFinished && gameId && (
+            <p className="status-message current-player">
+              Current Player: {currentPlayer}
+            </p>
+          )}
+          {!gameId && (
+            <p className="status-message">Please start a new game.</p>
+          )}
+          {gameId && (
+            <p className="status-message game-id">Game ID: {gameId}</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
