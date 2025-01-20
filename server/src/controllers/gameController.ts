@@ -1,8 +1,11 @@
 import { Request, Response } from 'express';
-import { GameState, games } from '../models/game';
+import { GameState } from '../models/game';
 import { checkWin } from '../utils/checkWin';
+import { loadGames, saveGames } from '../utils/fileStore';
 
-export const startGame = (req: Request, res: Response) => {
+export const startGame = (req: Request, res: Response): any => {
+  const games = loadGames();
+
   const newGame: GameState = {
     id: generateGameId(),
     board: Array(9).fill(null),
@@ -13,12 +16,14 @@ export const startGame = (req: Request, res: Response) => {
   };
 
   games[newGame.id] = newGame;
+  saveGames(games);
 
-  res.status(200).json({ gameId: newGame.id });
+  return res.status(200).json({ gameId: newGame.id });
 };
 
 export const makeMove = (req: Request, res: Response): any => {
   const { gameId, position } = req.body;
+  const games = loadGames();
 
   const game = games[gameId];
   if (!game) {
@@ -49,15 +54,21 @@ export const makeMove = (req: Request, res: Response): any => {
     game.currentPlayer = game.currentPlayer === 'X' ? 'O' : 'X';
   }
 
-  res.status(200).json({
+  // Save
+  games[gameId] = game;
+  saveGames(games);
+
+  return res.status(200).json({
     board: game.board,
     currentPlayer: game.currentPlayer,
     winner: game.winner,
+    isFinished: game.isFinished,
   });
 };
 
 export const getGameStatus = (req: Request, res: Response): any => {
   const { gameId } = req.params;
+  const games = loadGames();
 
   const game = games[gameId];
   if (!game) {
@@ -74,6 +85,7 @@ export const getGameStatus = (req: Request, res: Response): any => {
 
 export const getBoardState = (req: Request, res: Response): any => {
   const { gameId } = req.params;
+  const games = loadGames();
 
   const game = games[gameId];
   if (!game) {

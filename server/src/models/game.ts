@@ -6,8 +6,3 @@ export interface GameState {
   movesCount: number;
   isFinished: boolean;
 }
-
-/**
- * A basic in-memory store
- */
-export const games: Record<string, GameState> = {};
