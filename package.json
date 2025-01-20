@@ -1,0 +1,24 @@
+{
+  "name": "noughts-and-crosses",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
+    "start:server": "npm run -w server dev",
+    "start:client": "npm run -w client dev",
+    "dev": "npm start",
+    "test": "concurrently \"npm run test:server\" \"npm run test:client\"",
+    "test:server": "npm run -w server test",
+    "test:client": "npm run -w client test",
+    "test:coverage": "concurrently \"npm run test:coverage:server\" \"npm run test:coverage:client\"",
+    "test:coverage:server": "npm run -w server test -- --coverage",
+    "test:coverage:client": "npm run -w client test:coverage"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

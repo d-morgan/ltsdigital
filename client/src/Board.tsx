@@ -11,9 +11,10 @@ const Board: React.FC<BoardProps> = ({ squares, onSquareClick }) => {
     <div className="board">
       {squares.map((square, index) => (
         <div
-          key={index}
-          className="square"
-          onClick={() => onSquareClick(index)}
+        key={index}
+        className="square"
+        data-testid={`square-${index}`}
+        onClick={() => onSquareClick(index)}
         >
           {square}
         </div>
